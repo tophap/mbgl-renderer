@@ -399,7 +399,8 @@ var render = function render(style) {
         _options$ratio = options.ratio,
         ratio = _options$ratio === void 0 ? 1 : _options$ratio,
         _options$padding = options.padding,
-        padding = _options$padding === void 0 ? 0 : _options$padding;
+        padding = _options$padding === void 0 ? 0 : _options$padding,
+        encoding = options.encoding;
     var _options$center = options.center,
         center = _options$center === void 0 ? null : _options$center,
         _options$zoom = options.zoom,
@@ -621,7 +622,7 @@ var render = function render(style) {
           buffer[i + 1] = buffer[i + 1] / norm;
           buffer[i + 2] = buffer[i + 2] / norm;
         }
-      } // Convert raw image buffer to PNG
+      } // Convert raw image buffer to Jpeg
 
 
       try {
@@ -631,11 +632,11 @@ var render = function render(style) {
             height: height * ratio,
             channels: 4
           }
-        }).png().toBuffer().then(resolve)["catch"](reject);
-      } catch (pngErr) {
-        console.error('Error encoding PNG');
-        console.error(pngErr);
-        return reject(pngErr);
+        }).jpeg(encoding).toBuffer().then(resolve)["catch"](reject);
+      } catch (err) {
+        console.error('Error encoding jpeg');
+        console.error(err);
+        return reject(err);
       }
     });
   });

@@ -333,6 +333,7 @@ export const render = (style, width = 1024, height = 1024, options) =>
             token = null,
             ratio = 1,
             padding = 0,
+            encoding
         } = options
         let { center = null, zoom = null, tilePath = null } = options
 
@@ -589,7 +590,7 @@ export const render = (style, width = 1024, height = 1024, options) =>
                     }
                 }
 
-                // Convert raw image buffer to PNG
+                // Convert raw image buffer to Jpeg
                 try {
                     return sharp(buffer, {
                         raw: {
@@ -598,14 +599,14 @@ export const render = (style, width = 1024, height = 1024, options) =>
                             channels: 4,
                         },
                     })
-                        .png()
+                        .jpeg(encoding)
                         .toBuffer()
                         .then(resolve)
                         .catch(reject)
-                } catch (pngErr) {
-                    console.error('Error encoding PNG')
-                    console.error(pngErr)
-                    return reject(pngErr)
+                } catch (err) {
+                    console.error('Error encoding jpeg')
+                    console.error(err)
+                    return reject(err)
                 }
             }
         )
