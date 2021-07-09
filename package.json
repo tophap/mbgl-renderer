@@ -18,7 +18,7 @@
     "dependencies": {
         "@babel/runtime": "^7.7.2",
         "@mapbox/geo-viewport": "^0.4.0",
-        "@mapbox/mapbox-gl-native": "git+ssh://git@github.com/tophap/mapbox-gl-native#node-v5.0.2-memleak-patch",
+        "@tophap/mapbox-gl-native": "git+ssh://git@github.com/tophap/mapbox-gl-native#node-v5.0.2-memleak-patch",
         "@mapbox/mbtiles": "^0.11.0",
         "commander": "^3.0.2",
         "morgan": "^1.10.0",
