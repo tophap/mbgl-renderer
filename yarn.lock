@@ -1141,9 +1141,9 @@
     readdirp "^2.2.1"
     upath "^1.1.1"
 
-"@tophap/mapbox-gl-native@git+ssh://git@github.com/tophap/mapbox-gl-native#node-v5.0.2-memleak-patch":
-  version "5.0.2"
-  resolved "git+ssh://git@github.com/tophap/mapbox-gl-native#c69b8ba7dceb4bc6d77f42364b9c40c9c6f6a674"
+"@tophap/mapbox-gl-native@git+ssh://git@github.com/tophap/mapbox-gl-native#adjust-external-memory":
+  version "5.0.0"
+  resolved "git+ssh://git@github.com/tophap/mapbox-gl-native#8b6477e4d58fa92b12c33e0e337281b5e9a01e17"
   dependencies:
     "@mapbox/cmake-node-module" "^1.2.0"
     minimatch "^3.0.4"
