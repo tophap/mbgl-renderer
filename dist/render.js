@@ -602,6 +602,7 @@ var render = function render(style) {
         return reject(err);
       }
 
+      console.log("map.release()");
       map.release(); // release map resources to prevent reusing in future render requests
       // Un-premultiply pixel values
       // Mapbox GL buffer contains premultiplied values, which are not handled correctly by sharp
@@ -609,35 +610,39 @@ var render = function render(style) {
       // since we are dealing with 8-bit RGBA values, normalize alpha onto 0-255 scale and divide
       // it out of RGB values
 
-      for (var i = 0; i < buffer.length; i += 4) {
-        var alpha = buffer[i + 3];
-        var norm = alpha / 255;
-
-        if (alpha === 0) {
-          buffer[i] = 0;
-          buffer[i + 1] = 0;
-          buffer[i + 2] = 0;
-        } else {
-          buffer[i] = buffer[i] / norm;
-          buffer[i + 1] = buffer[i + 1] / norm;
-          buffer[i + 2] = buffer[i + 2] / norm;
-        }
-      } // Convert raw image buffer to Jpeg
-
-
-      try {
-        return (0, _sharp["default"])(buffer, {
-          raw: {
-            width: width * ratio,
-            height: height * ratio,
-            channels: 4
+      /*
+      for (let i = 0; i < buffer.length; i += 4) {
+          const alpha = buffer[i + 3]
+          const norm = alpha / 255
+          if (alpha === 0) {
+              buffer[i] = 0
+              buffer[i + 1] = 0
+              buffer[i + 2] = 0
+          } else {
+              buffer[i] = buffer[i] / norm
+              buffer[i + 1] = buffer[i + 1] / norm
+              buffer[i + 2] = buffer[i + 2] / norm
           }
-        }).jpeg(encoding).toBuffer().then(resolve)["catch"](reject);
-      } catch (err) {
-        console.error('Error encoding jpeg');
-        console.error(err);
-        return reject(err);
       }
+       // Convert raw image buffer to Jpeg
+      try {
+          return sharp(buffer, {
+              raw: {
+                  width: width * ratio,
+                  height: height * ratio,
+                  channels: 4,
+              },
+          })
+              .jpeg(encoding)
+              .toBuffer()
+              .then(resolve)
+              .catch(reject)
+      } catch (err) {
+          console.error('Error encoding jpeg')
+          console.error(err)
+          return reject(err)
+      }
+      */
     });
   });
 };

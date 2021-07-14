@@ -569,6 +569,7 @@ export const render = (style, width = 1024, height = 1024, options) =>
                     return reject(err)
                 }
 
+                console.log("map.release()");
                 map.release() // release map resources to prevent reusing in future render requests
 
                 // Un-premultiply pixel values
@@ -576,6 +577,7 @@ export const render = (style, width = 1024, height = 1024, options) =>
                 // https://github.com/mapbox/mapbox-gl-native/issues/9124
                 // since we are dealing with 8-bit RGBA values, normalize alpha onto 0-255 scale and divide
                 // it out of RGB values
+                /*
                 for (let i = 0; i < buffer.length; i += 4) {
                     const alpha = buffer[i + 3]
                     const norm = alpha / 255
@@ -608,6 +610,7 @@ export const render = (style, width = 1024, height = 1024, options) =>
                     console.error(err)
                     return reject(err)
                 }
+                */
             }
         )
     })
