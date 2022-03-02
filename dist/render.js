@@ -380,6 +380,7 @@ var getRemoteAsset = function getRemoteAsset(url, callback) {
  * width, height, bounds: [west, south, east, north], ratio, padding
  * @param {String} tilePath - path to directory containing local mbtiles files that are
  * referenced from the style.json as "mbtiles://<tileset>"
+ * @param {boolean} useWebP - Default is JPEG. Set useWebP=true for WebP.
  */
 
 
@@ -387,6 +388,7 @@ var render = function render(style) {
   var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1024;
   var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1024;
   var options = arguments.length > 3 ? arguments[3] : undefined;
+  var useWebP = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
   return new Promise(function (resolve, reject) {
     var _options$bounds = options.bounds,
         bounds = _options$bounds === void 0 ? null : _options$bounds,
@@ -626,13 +628,15 @@ var render = function render(style) {
 
 
       try {
-        return (0, _sharp["default"])(buffer, {
+        var sharp = (0, _sharp["default"])(buffer, {
           raw: {
             width: width * ratio,
             height: height * ratio,
             channels: 4
           }
-        }).jpeg(encoding).toBuffer().then(resolve)["catch"](reject);
+        });
+        var image = useWebP ? sharp.webp() : sharp.jpeg(encoding);
+        return image.toBuffer().then(resolve)["catch"](reject);
       } catch (err) {
         console.error('Error encoding jpeg');
         console.error(err);
