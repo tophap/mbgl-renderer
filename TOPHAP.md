@@ -1,3 +1,6 @@
+v0.7.10 (2022-03-02):
+    * Remove encoding param for sharp()
+
 v0.7.9 (2022-03-02):
     * Upgrade sharp to support AVIF format.
 

@@ -310,10 +310,10 @@ const getRemoteAsset = (url, callback) => {
     )
 }
 
-function sharpConvertImage(sharpObject, imageFormat, encoding = null) {
+function sharpConvertImage(sharpObject, imageFormat) {
     if (imageFormat === 'avif') return sharpObject.avif().toBuffer()
     if (imageFormat === 'webp') return sharpObject.webp().toBuffer()
-    return sharpObject.jpeg(encoding).toBuffer()
+    return sharpObject.jpeg().toBuffer()
 }
 
 /**
@@ -339,8 +339,7 @@ export const render = (style, width = 1024, height = 1024, options, imageFormat 
             pitch = 0,
             token = null,
             ratio = 1,
-            padding = 0,
-            encoding
+            padding = 0
         } = options
         let { center = null, zoom = null, tilePath = null } = options
 
@@ -605,11 +604,11 @@ export const render = (style, width = 1024, height = 1024, options, imageFormat 
                         channels: 4,
                     }
                     const sharp = Sharp(buffer, { raw })
-                    return sharpConvertImage(sharp, imageFormat, encoding)
+                    return sharpConvertImage(sharp, imageFormat)
                         .then(resolve)
                         .catch(reject)
                 } catch (error) {
-                    console.error('Error encoding jpeg')
+                    console.error(`Error encoding image (format = ${imageFormat})`)
                     console.error(error)
                     return reject(error)
                 }

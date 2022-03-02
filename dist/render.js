@@ -369,10 +369,9 @@ var getRemoteAsset = function getRemoteAsset(url, callback) {
 };
 
 function sharpConvertImage(sharpObject, imageFormat) {
-  var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   if (imageFormat === 'avif') return sharpObject.avif().toBuffer();
   if (imageFormat === 'webp') return sharpObject.webp().toBuffer();
-  return sharpObject.jpeg(encoding).toBuffer();
+  return sharpObject.jpeg().toBuffer();
 }
 /**
  * Render a map using Mapbox GL, based on layers specified in style.
@@ -408,8 +407,7 @@ var render = function render(style) {
         _options$ratio = options.ratio,
         ratio = _options$ratio === void 0 ? 1 : _options$ratio,
         _options$padding = options.padding,
-        padding = _options$padding === void 0 ? 0 : _options$padding,
-        encoding = options.encoding;
+        padding = _options$padding === void 0 ? 0 : _options$padding;
     var _options$center = options.center,
         center = _options$center === void 0 ? null : _options$center,
         _options$zoom = options.zoom,
@@ -643,9 +641,9 @@ var render = function render(style) {
         var sharp = (0, _sharp["default"])(buffer, {
           raw: raw
         });
-        return sharpConvertImage(sharp, imageFormat, encoding).then(resolve)["catch"](reject);
+        return sharpConvertImage(sharp, imageFormat).then(resolve)["catch"](reject);
       } catch (error) {
-        console.error('Error encoding jpeg');
+        console.error("Error encoding image (format = ".concat(imageFormat, ")"));
         console.error(error);
         return reject(error);
       }
