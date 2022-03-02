@@ -370,8 +370,8 @@ var getRemoteAsset = function getRemoteAsset(url, callback) {
 
 function sharpConvertImage(sharpObject, imageFormat) {
   var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  if (imageFormat === 'avif') return sharpObject.avif(encoding).toBuffer();
-  if (imageFormat === 'webp') return sharpObject.webp(encoding).toBuffer();
+  if (imageFormat === 'avif') return sharpObject.avif().toBuffer();
+  if (imageFormat === 'webp') return sharpObject.webp().toBuffer();
   return sharpObject.jpeg(encoding).toBuffer();
 }
 /**

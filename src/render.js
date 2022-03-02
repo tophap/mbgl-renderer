@@ -311,8 +311,8 @@ const getRemoteAsset = (url, callback) => {
 }
 
 function sharpConvertImage(sharpObject, imageFormat, encoding = null) {
-    if (imageFormat === 'avif') return sharpObject.avif(encoding).toBuffer()
-    if (imageFormat === 'webp') return sharpObject.webp(encoding).toBuffer()
+    if (imageFormat === 'avif') return sharpObject.avif().toBuffer()
+    if (imageFormat === 'webp') return sharpObject.webp().toBuffer()
     return sharpObject.jpeg(encoding).toBuffer()
 }
 

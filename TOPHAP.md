@@ -1,3 +1,6 @@
+v0.7.8 (2022-03-02):
+    * Remove encoding option for avif and webp
+
 v0.7.7 (2022-03-02):
     * Support AVIF.
 
