@@ -367,6 +367,13 @@ var getRemoteAsset = function getRemoteAsset(url, callback) {
     }
   });
 };
+
+function sharpConvertImage(sharpObject, imageFormat) {
+  var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  if (imageFormat === 'avif') return sharpObject.avif(encoding).toBuffer();
+  if (imageFormat === 'webp') return sharpObject.webp(encoding).toBuffer();
+  return sharpObject.jpeg(encoding).toBuffer();
+}
 /**
  * Render a map using Mapbox GL, based on layers specified in style.
  * Returns a Promise with the PNG image data as its first parameter for the map image.
@@ -380,7 +387,7 @@ var getRemoteAsset = function getRemoteAsset(url, callback) {
  * width, height, bounds: [west, south, east, north], ratio, padding
  * @param {String} tilePath - path to directory containing local mbtiles files that are
  * referenced from the style.json as "mbtiles://<tileset>"
- * @param {boolean} useWebP - Default is JPEG. Set useWebP=true for WebP.
+ * @param {string} imageFormat - Default = 'jpeg'. Acceptable formats: 'jpeg', 'avif', 'webp'
  */
 
 
@@ -388,7 +395,7 @@ var render = function render(style) {
   var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1024;
   var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1024;
   var options = arguments.length > 3 ? arguments[3] : undefined;
-  var useWebP = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+  var imageFormat = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'jpeg';
   return new Promise(function (resolve, reject) {
     var _options$bounds = options.bounds,
         bounds = _options$bounds === void 0 ? null : _options$bounds,
@@ -628,19 +635,19 @@ var render = function render(style) {
 
 
       try {
+        var raw = {
+          width: width * ratio,
+          height: height * ratio,
+          channels: 4
+        };
         var sharp = (0, _sharp["default"])(buffer, {
-          raw: {
-            width: width * ratio,
-            height: height * ratio,
-            channels: 4
-          }
+          raw: raw
         });
-        var image = useWebP ? sharp.webp() : sharp.jpeg(encoding);
-        return image.toBuffer().then(resolve)["catch"](reject);
-      } catch (err) {
+        return sharpConvertImage(sharp, imageFormat, encoding).then(resolve)["catch"](reject);
+      } catch (error) {
         console.error('Error encoding jpeg');
-        console.error(err);
-        return reject(err);
+        console.error(error);
+        return reject(error);
       }
     });
   });

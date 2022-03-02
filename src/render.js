@@ -310,6 +310,12 @@ const getRemoteAsset = (url, callback) => {
     )
 }
 
+function sharpConvertImage(sharpObject, imageFormat, encoding = null) {
+    if (imageFormat === 'avif') return sharpObject.avif(encoding).toBuffer()
+    if (imageFormat === 'webp') return sharpObject.webp(encoding).toBuffer()
+    return sharpObject.jpeg(encoding).toBuffer()
+}
+
 /**
  * Render a map using Mapbox GL, based on layers specified in style.
  * Returns a Promise with the PNG image data as its first parameter for the map image.
@@ -323,9 +329,9 @@ const getRemoteAsset = (url, callback) => {
  * width, height, bounds: [west, south, east, north], ratio, padding
  * @param {String} tilePath - path to directory containing local mbtiles files that are
  * referenced from the style.json as "mbtiles://<tileset>"
- * @param {boolean} useWebP - Default is JPEG. Set useWebP=true for WebP.
+ * @param {string} imageFormat - Default = 'jpeg'. Acceptable formats: 'jpeg', 'avif', 'webp'
  */
-export const render = (style, width = 1024, height = 1024, options, useWebP = false) =>
+export const render = (style, width = 1024, height = 1024, options, imageFormat = 'jpeg') =>
     new Promise((resolve, reject) => {
         const {
             bounds = null,
@@ -593,20 +599,19 @@ export const render = (style, width = 1024, height = 1024, options, useWebP = fa
 
                 // Convert raw image buffer to Jpeg
                 try {
-                    const sharp = Sharp(buffer, {
-                        raw: {
-                            width: width * ratio,
-                            height: height * ratio,
-                            channels: 4,
-                        },
-                    })
-
-                    const image = useWebP ? sharp.webp() : sharp.jpeg(encoding)
-                    return image.toBuffer().then(resolve).catch(reject)
-                } catch (err) {
+                    const raw = {
+                        width: width * ratio,
+                        height: height * ratio,
+                        channels: 4,
+                    }
+                    const sharp = Sharp(buffer, { raw })
+                    return sharpConvertImage(sharp, imageFormat, encoding)
+                        .then(resolve)
+                        .catch(reject)
+                } catch (error) {
                     console.error('Error encoding jpeg')
-                    console.error(err)
-                    return reject(err)
+                    console.error(error)
+                    return reject(error)
                 }
             }
         )
