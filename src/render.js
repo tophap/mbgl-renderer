@@ -2,7 +2,7 @@
 import fs from 'fs'
 import path from 'path'
 // sharp must be before zlib and other imports or sharp gets wrong version of zlib and breaks on some servers
-import sharp from 'sharp'
+import Sharp from 'sharp'
 import zlib from 'zlib'
 import geoViewport from '@mapbox/geo-viewport'
 import mbgl from '@naturalatlas/mapbox-gl-native'
@@ -323,8 +323,9 @@ const getRemoteAsset = (url, callback) => {
  * width, height, bounds: [west, south, east, north], ratio, padding
  * @param {String} tilePath - path to directory containing local mbtiles files that are
  * referenced from the style.json as "mbtiles://<tileset>"
+ * @param {boolean} useWebP - Default is JPEG. Set useWebP=true for WebP.
  */
-export const render = (style, width = 1024, height = 1024, options) =>
+export const render = (style, width = 1024, height = 1024, options, useWebP = false) =>
     new Promise((resolve, reject) => {
         const {
             bounds = null,
@@ -592,17 +593,16 @@ export const render = (style, width = 1024, height = 1024, options) =>
 
                 // Convert raw image buffer to Jpeg
                 try {
-                    return sharp(buffer, {
+                    const sharp = Sharp(buffer, {
                         raw: {
                             width: width * ratio,
                             height: height * ratio,
                             channels: 4,
                         },
                     })
-                        .jpeg(encoding)
-                        .toBuffer()
-                        .then(resolve)
-                        .catch(reject)
+
+                    const image = useWebP ? sharp.webp() : sharp.jpeg(encoding)
+                    return image.toBuffer().then(resolve).catch(reject)
                 } catch (err) {
                     console.error('Error encoding jpeg')
                     console.error(err)
